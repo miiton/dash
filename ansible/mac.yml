@@ -18,22 +18,57 @@
     - name: Tap Caskroom
       homebrew_tap: tap=caskroom/cask
 
+    - name: Tap Caskroom/Versions
+      homebrew_tap: tap=caskroom/versions
+
+    - name: Tap completions
+      homebrew_tap: tap=homebrew/completions
+
     - name: Install Caskroom
       homebrew: name=brew-cask state=latest
 
-    - name: Install Virtualbox
-      homebrew_cask: name=virtualbox state=present
-      environment:
-        HOMEBREW_CASK_OPTS: --appdir=/Applications
+    - name: Change user shell to zsh
+      command: dscl . -create /Users/$USER UserShell /bin/zsh
+      become: yes
+      become_method: sudo
 
-    - name: Install Docker and Extras
+    - name: Install brew apps
       homebrew:
         name: "{{ item }}"
         state: latest
       with_items:
+        - zsh-completion
+        - docker-completion
+        - docker-compose-completion
+        - vagrant-completion
+        - pip-completion
+        - neovim/neovim/neovim
+        - go
+        - pyenv
+        - https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
         - docker
         - docker-machine
         - docker-compose
+
+    - name: Install cask apps
+      homebrew_cask:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - virtualbox
+        - vagrant
+        - the-unarchiver
+        - sketch
+        - sketch-tool
+        - sketch-toolbox
+        - google-chrome
+        - firefox
+        - dropbox
+        - slack
+        - skitch
+        - iterm2-nightly
+      environment:
+        HOMEBREW_CASK_OPTS: --appdir=/Applications
 
     - name: Create resolver directory
       file: path=/etc/resolver state=directory mode=0755
@@ -84,3 +119,11 @@
 
     - name: Create Docker Machine
       command: "{{ dev_env_dir }}/bin/dev machine create creates=~/.docker/machine/machines/dev/config.json"
+
+    - name: Install Pythons
+      command: pyenv install "{{ item }}"
+      with_items:
+        - 2.7.11
+        - 3.5.1
+      environment:
+        PYENV_ROOT="$HOME/.pyenv" 
