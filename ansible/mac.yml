@@ -67,6 +67,7 @@
         - slack
         - skitch
         - iterm2-nightly
+        - avast
       environment:
         HOMEBREW_CASK_OPTS: --appdir=/Applications
 
