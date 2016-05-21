@@ -87,14 +87,11 @@
       become_method: sudo
 
     - name: Add NFS share to /etc/exports
-      lineinfile:
+      blockinfile:
         dest: /etc/exports
-        line: "{{ item }}"
         create: yes
-      with_items:
-        - '## Begin Dash Developer Environment ##'
-        - '\"/Users\" 192.168.99.100 -alldirs -mapall=0:80'
-        - '## End Dash Developer Environment ##'
+        marker: "## {mark} Dash Developer Environment - ANSIBLE MANAGED BLOCK ##"
+        content: '/Users 192.168.99.100 -alldirs -mapall=0:80'
       become: yes
       become_method: sudo
       register: exports
@@ -119,8 +116,17 @@
         create: yes
       when: ansible_env.SHELL == "/bin/bash"
 
+    - name: Add Docker Machine Environment to .config/fish/config.fish
+      lineinfile:
+        dest: ~/.config/fish/config.fish
+        line: "source {{ dev_env_dir }}/ansible/mac_profile.fish"
+        create: yes
+      when: ansible_env.SHELL == "/usr/local/bin/fish"
+
     - name: Create Docker Machine
-      command: "{{ dev_env_dir }}/bin/dev machine create creates=~/.docker/machine/machines/dev/config.json"
+      command: "{{ dev_env_dir }}/bin/dev machine create"
+      args:
+        creates: "~/.docker/machine/machines/dev/config.json"
 
     - name: Install Pythons
       command: pyenv install "{{ item }}"

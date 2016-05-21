@@ -20,7 +20,7 @@
 
 **Host** or **host machine** refers to your physical computer.
 
-**Docker Machine**, **virtual machine**, **guest**, **guest machine**, **guest VM**, etc., all refer to the virtual machine that runs the Docker server and Docker contiainers.
+**Docker Machine**, **virtual machine**, **guest**, **guest machine**, **guest VM**, etc., all refer to the virtual machine that runs the Docker server and Docker containers.
 
 **Containers** or **Docker containers** refer to the individual services running inside of the virtual machine. Mac OS cannot natively run Docker containers (yet), so they have to be run inside of a VM.
 
@@ -88,6 +88,26 @@ For NFS shares to work properly after initial setup, you may need to restart the
 
 or just restart your host machine. Usually this is only required once.
 
+#### Network related problems
+
+If you can ssh to docker-machine but can't run `docker-compose`, `docker` or `dev up` it's usually sign of network interface problem.
+
+Dash setup doesn't play well with some VPN providers. For example Cisco anyconnect can cause you plenty of problems. You can also mess networks just by changing to different wifi.
+
+You can fix this by first leaving VPN (if any) and then by following these steps:
+
+```
+# Stop and kill dev machine
+$ dev machine stop
+$ dev machine kill # This triggers new network creation later on
+
+# Remove virtualbox interface, usually vboxnet0
+$ VBoxManage hostonlyif remove $(VBoxManage showvminfo dev --machinereadable | grep hostonlyadapter | cut -d '"' -f 2)
+
+# Start dev machine again
+$ dev machine start
+```
+
 #### Users of Vagrant VMs with NFS shares
 
 Both Docker Machine and Vagrant can use NFS to mount host volumes, however the directory path model for Docker Machine conflicts with Vagrant's. The easiest solution is to reprovision your Vagrant VMs to use the Docker model. Instead of sharing a specific project folder, share the entire /Users path. Your /etc/exports may have looked like:
@@ -112,7 +132,7 @@ Now the entire /Users directory gets shared into the Vagrant VM. You may then ne
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/dash/fork )
+1. Fork it ( https://github.com/IFTTT/dash/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

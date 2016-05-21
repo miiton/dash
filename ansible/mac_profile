@@ -205,7 +205,6 @@ set -o vi
 typeset -U name_of_the_variable
 
 # Dash Developer Environment Profile
-# This file should be shell-agnostic
 export PATH=$PATH:/usr/local/dev-env/bin
 eval "$(docker-machine env dev)"
 
