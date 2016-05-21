@@ -49,6 +49,7 @@
         - docker
         - docker-machine
         - docker-compose
+        - mobile-shell
 
     - name: Install cask apps
       homebrew_cask:
