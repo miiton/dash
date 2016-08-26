@@ -46,7 +46,6 @@
         - go
         - pyenv
         - https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
-        - docker
         - docker-machine
         - docker-compose
         - mobile-shell
@@ -56,8 +55,6 @@
         name: "{{ item }}"
         state: latest
       with_items:
-        - virtualbox
-        - vagrant
         - the-unarchiver
         - sketch
         - sketch-tool
@@ -68,65 +65,10 @@
         - slack
         - skitch
         - iterm2-nightly
+        - docker
         - avast
       environment:
         HOMEBREW_CASK_OPTS: --appdir=/Applications
-
-    - name: Create resolver directory
-      file: path=/etc/resolver state=directory mode=0755
-      become: yes
-      become_method: sudo
-
-    - name: Create dev resolver file at /etc/resolver/dev
-      file:
-        src: "{{ dev_env_dir }}/ansible/resolver-dev.conf"
-        dest: /etc/resolver/dev
-        state: link
-        force: yes
-      become: yes
-      become_method: sudo
-
-    - name: Add NFS share to /etc/exports
-      blockinfile:
-        dest: /etc/exports
-        create: yes
-        marker: "## {mark} Dash Developer Environment - ANSIBLE MANAGED BLOCK ##"
-        content: '/Users 192.168.99.100 -alldirs -mapall=0:80'
-      become: yes
-      become_method: sudo
-      register: exports
-
-    - name: Restart nfsd
-      command: sudo nfsd restart
-      become: yes
-      become_method: sudo
-      when: exports.changed
-
-    - name: Add Docker Machine Environment to .zshrc
-      lineinfile:
-        dest: ~/.zshrc
-        line: "source {{ dev_env_dir }}/ansible/mac_profile"
-        create: yes
-      when: ansible_env.SHELL == "/bin/zsh" or ansible_env.SHELL == "/usr/local/bin/zsh"
-
-    - name: Add Docker Machine Environment to .bash_profile
-      lineinfile:
-        dest: ~/.bash_profile
-        line: "source {{ dev_env_dir }}/ansible/mac_profile"
-        create: yes
-      when: ansible_env.SHELL == "/bin/bash"
-
-    - name: Add Docker Machine Environment to .config/fish/config.fish
-      lineinfile:
-        dest: ~/.config/fish/config.fish
-        line: "source {{ dev_env_dir }}/ansible/mac_profile.fish"
-        create: yes
-      when: ansible_env.SHELL == "/usr/local/bin/fish"
-
-    - name: Create Docker Machine
-      command: "{{ dev_env_dir }}/bin/dev machine create"
-      args:
-        creates: "~/.docker/machine/machines/dev/config.json"
 
     - name: Install Pythons
       command: pyenv install "{{ item }}"
@@ -134,4 +76,4 @@
         - 2.7.11
         - 3.5.1
       environment:
-        PYENV_ROOT="$HOME/.pyenv" 
+        PYENV_ROOT="$HOME/.pyenv"
