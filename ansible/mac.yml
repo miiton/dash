@@ -2,9 +2,6 @@
 - hosts: 127.0.0.1
   connection: local
 
-  vars:
-    dev_env_dir: /usr/local/dev-env
-
   tasks:
 
     - name: Check Sudo Password
@@ -37,36 +34,36 @@
         name: "{{ item }}"
         state: latest
       with_items:
-        - zsh-completion
         - docker-completion
-        - docker-compose-completion
-        - vagrant-completion
-        - pip-completion
-        - neovim/neovim/neovim
-        - go
-        - pyenv
-        - https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
-        - docker-machine
         - docker-compose
-        - mobile-shell
+        - docker-compose-completion
+        - docker-machine
+        - go
+        - homebrew/dupes/less
+        - https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
+        - neovim/neovim/neovim
+        - pip-completion
+        - pyenv
+        - vagrant-completion
+        - zsh-completion
 
     - name: Install cask apps
       homebrew_cask:
         name: "{{ item }}"
         state: latest
       with_items:
-        - the-unarchiver
+        - avast
+        - docker
+        - dropbox
+        - firefox
+        - google-chrome
+        - iterm2-nightly
         - sketch
         - sketch-tool
         - sketch-toolbox
-        - google-chrome
-        - firefox
-        - dropbox
-        - slack
         - skitch
-        - iterm2-nightly
-        - docker
-        - avast
+        - slack
+        - the-unarchiver
       environment:
         HOMEBREW_CASK_OPTS: --appdir=/Applications
 
