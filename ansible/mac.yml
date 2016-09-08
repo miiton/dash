@@ -52,25 +52,35 @@
         name: "{{ item }}"
         state: latest
       with_items:
+        - appcleaner
         - avast
+        - adobe-reader
         - docker
         - dropbox
         - firefox
+        - fliqlo
         - google-chrome
         - iterm2-nightly
+        - java7
+        - karabiner
+        - licecap
+        - omnifocus
         - sketch
         - sketch-tool
         - sketch-toolbox
         - skitch
         - slack
+        - sourcetree
+        - tunnelblick
         - the-unarchiver
+        - yed
       environment:
         HOMEBREW_CASK_OPTS: --appdir=/Applications
 
     - name: Install Pythons
       command: pyenv install "{{ item }}"
       with_items:
-        - 2.7.11
-        - 3.5.1
+        - 2.7.12
+        - 3.5.2
       environment:
         PYENV_ROOT="$HOME/.pyenv"
