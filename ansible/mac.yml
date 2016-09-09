@@ -34,18 +34,25 @@
         name: "{{ item }}"
         state: latest
       with_items:
-        - docker-completion
         - docker-compose
-        - docker-compose-completion
         - docker-machine
         - go
         - homebrew/dupes/less
-        - https://raw.githubusercontent.com/choppsv1/homebrew-term24/master/tmux.rb
+        - tmux
         - neovim/neovim/neovim
-        - pip-completion
         - pyenv
-        - vagrant-completion
+
+    - name: Install completions
+      homebrew:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - docker-completion
+        - docker-compose-completion
+        - docker-machine-completion
+        - pip-completion
         - zsh-completion
+        - brew-cask-completion
 
     - name: Install cask apps
       homebrew_cask:
@@ -65,6 +72,7 @@
         - karabiner
         - licecap
         - omnifocus
+        - PowerShell
         - sketch
         - sketch-tool
         - sketch-toolbox
