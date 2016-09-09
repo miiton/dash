@@ -41,6 +41,8 @@
         - tmux
         - neovim/neovim/neovim
         - pyenv
+        - node
+        - npm
 
     - name: Install completions
       homebrew:
