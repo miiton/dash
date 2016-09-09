@@ -59,6 +59,7 @@
         name: "{{ item }}"
         state: latest
       with_items:
+        - 1password
         - appcleaner
         - avast
         - adobe-reader
