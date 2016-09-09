@@ -1,0 +1,55 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+
+  tasks:
+
+    - name: Check Sudo Password
+      command: ls
+      become: yes
+      become_method: sudo
+
+    - name: Update Homebrew
+      homebrew: update_homebrew=yes
+
+    - name: Tap completions
+      homebrew_tap: tap=homebrew/completions
+
+    - name: Change user shell to zsh
+      command: chsh -s /bin/zsh $USER
+      become: yes
+      become_method: sudo
+
+    - name: Install brew apps
+      homebrew:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - tmux
+        - go
+        - docker
+        - docker-compose
+        - docker-machine
+        - neovim/neovim/neovim
+        - pyenv
+        - node
+        - npm
+
+    - name: Install completions
+      homebrew:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - docker-completion
+        - docker-compose-completion
+        - docker-machine-completion
+        - pip-completion
+        - zsh-completion
+
+    - name: Install Pythons
+      command: pyenv install "{{ item }}"
+      with_items:
+        - 2.7.12
+        - 3.5.2
+      environment:
+        PYENV_ROOT="$HOME/.pyenv"

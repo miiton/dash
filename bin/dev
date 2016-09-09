@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'open3'
+require 'rbconfig'
 
 class DevTool
   MAIN_HELP_BANNER = <<HEREDOC
@@ -89,7 +90,17 @@ HEREDOC
 
   def update(args)
     system('cd /usr/local/dev-env && git fetch && git reset --hard origin/master')
-    system('ansible-playbook /usr/local/dev-env/ansible/mac.yml -i 127.0.0.1, --ask-become-pass --verbose')
+    def os
+        @os ||= (
+            host_os = RbConfig::CONFIG['host_os']
+            case host_os
+            when /linux/
+                system('ansible-playbook /usr/local/dev-env/ansible/ubuntu.yml -i 127.0.0.1, --ask-become-pass --verbose')
+            else
+                system('ansible-playbook /usr/local/dev-env/ansible/mac.yml -i 127.0.0.1, --ask-become-pass --verbose')
+            end
+        )
+    end
   end
 
   def dash(args)
